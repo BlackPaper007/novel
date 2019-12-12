@@ -1,5 +1,6 @@
 package com.utlis;
 
+import com.impl.chapter.BQGChapterDetailSpider;
 import com.impl.chapter.ChapterDetailSpider;
 import com.interfaces.IChapterDetail;
 import com.novelEnum.Site;
@@ -24,6 +25,8 @@ public final class ChapterDetailSpiderFactory {
 		case xbiqige:
 		case booktxt:
 			chapterDetail = new ChapterDetailSpider(); break;
+		case biquge:
+			chapterDetail = new BQGChapterDetailSpider(); break;
 		}
 		return chapterDetail;
 	}

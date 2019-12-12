@@ -21,9 +21,9 @@
 			<div class="row">
 				<div class="col-lg-12">
 					<div class="input-group">
-						<input type="text" id="keyword" class="form-control" onkeypress="var e=window.event || arguments[0];if(e.keyCode==13){search2();}" placeholder="可以输入书名，作者名，甚至可以是符合条件的URL..."/>
+						<input type="text" id="keyword" class="form-control" onkeydown="var e=window.event || arguments[0];if(e.keyCode==13){search()}" placeholder="可以输入书名，作者名，甚至可以是符合条件的URL..."/>
 						<span class="input-group-btn">
-							<button class="btn btn-default" type="button" id="btnSearch">小说搜搜</button>
+							<button class="btn btn-default" type="button" id="btnSearch" >小说搜搜</button>
 						</span>
 					</div>
 				</div>
@@ -31,10 +31,9 @@
 		</div>
 	</div>
 	<div class="container no-table-responsive">
-		<table
-			class="table table-striped table-bordered table-condensed table-hover">
+		<table class="table table-striped table-bordered table-condensed table-hover" style="text-align:center;font-style:800;">
 			<thead>
-				<tr style="text-align:center;font-style:800;">
+				<tr>
 					<th>#</th>
 					<td>书名</td>
 					<td>作者</td>
@@ -42,7 +41,7 @@
 					<td>平台</td>
 				</tr>
 			</thead>
-			<tbody id="list">
+			<tbody id="list" >
 			</tbody>
 			<!-- <tfoot>
 				<tr>
@@ -70,53 +69,72 @@
     <script th:src="${'bootstrap-3.3.7-dist/js/bootstrap.min.js'}"></script>
 	<script>
 		$(function(){
-			$("#btnSearch").click(select());
-		})
+			$("#btnSearch").click(search);
+			$("#keyword").click(function(e) {
+				$("#keyword").select();
+			});
+		});
+		
 		function search() {
-			var val = $("#keyword").val().trim();
-			if (val.length == 0) {
-				alert(1);
+			var wd = $("#keyword").val().trim();
+			if (!wd) {
 				alert("请输入小说的名字或者作者的名字...");
 				return;
 			}
+			if (wd.indexOf("http") == 0) {
+				searchByUrl(wd);
+			}else{
+				searchBywd(wd);
+			}
+		};
+
+		function searchByUrl(url) {
+			window.open("./chapterList?url=" + url);
+		}
+		function searchBywd(wd) {
 			$.ajax({
-				url : "./keywordSearch/" + val,
-				type : "get",
+				url : "./keywordSearch/" + wd,
+				type : "post",
 				dataType : "json",
-				error:function(){
-					alert(3);
+				error : function() {
 					alert("小说抓取失败");
 				},
 				success : function(result) {
-					$(result).each(function(index,novel){
-						var $tr=$("<tr><td>"
-								+(index+1) +"</td><td><a href='./chapterList?url="
-								+novel.url+"'>"
-								+novel.name+"</a></td><td>"
-								+novel.author+"</td><td>"
-								+isLatelychapterNull(novel.latelychapter)+"</td><td>"
-								+getPlatformId(novel.platformId)+"</td></tr>")
-						$("#list").append($tr);
-					});
+					if(result.length==0){
+						alert("数据库中没有该小说");
+					}else{
+						$("#list").html("");
+						$(result).each(function(index, novel) {
+							var $tr = $("<tr><td>"+ (index + 1)
+								+ "</td><td><a href='./chapterList?url="
+								+ novel.url	+ "'>"
+								+ novel.name + "</a></td><td>"
+								+ novel.author + "</td><td>"
+								+ isLatelychapterNull(novel.latelychapter)+ "</td><td>"
+								+ getPlatformId(novel.platformId) + "</td></tr>");
+							$("#list").append($tr);
+						});
+					}
 				}
-
 			});
 		};
-		function isLatelychapterNull(latelychapter){
-			if(latelychapter==null){
+		function isLatelychapterNull(latelychapter) {
+			if (latelychapter == null) {
 				return "暂时没有最新章节";
-			}else{
+			} else {
 				return latelychapter;
 			}
 		};
-		function getPlatformId(platformId){
-			if(platformId==1){
+		function getPlatformId(platformId) {
+			if (platformId == 1) {
 				return "顶点小说";
-			}else if(platformId==2){
+			} else if (platformId == 2) {
 				return "uu书盟";
-			}else if(platformId==3){
+			} else if (platformId == 3) {
 				return "新笔趣阁";
-			}else{
+			} else if (platformId == 4) {
+				return "笔趣阁";
+			} else {
 				return "未知";
 			}
 		};

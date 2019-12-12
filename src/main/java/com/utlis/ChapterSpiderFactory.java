@@ -3,6 +3,7 @@ package com.utlis;
 import java.util.List;
 
 import com.entity.Chapter;
+import com.impl.chapter.BQGChapterSpider;
 import com.impl.chapter.ChapterSpider;
 import com.novelEnum.Site;
 
@@ -23,6 +24,8 @@ public final class ChapterSpiderFactory {
 		case xbiqige:
 		case booktxt:
 			chapters = new ChapterSpider().getsChapters(url); break;
+		case biquge:
+			chapters = new BQGChapterSpider().getsChapters(url); break;
 		}
 		return chapters;
 	}

@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -55,18 +54,16 @@ public class NovelDownload implements INovelDownload {
 		}
 		
 		ExecutorService service = Executors.newFixedThreadPool(maxThreadSize);
-		Set<String> keySet = downloadTasks.keySet();
-		//Set<String> keySet = Collections.synchronizedSet(downloadTasks.keySet());//线程安全
 		List<Future<String>> tasks = new ArrayList<>();
 		//保存文件路径 D:/root/site/bookName/
 		Novel novel = new Novel();
 		String savePath = config.getPath() + "/" + Site.getEnumByUrl(url).getUrl() + "/" + novel.getName();
 		new File(savePath+"/merge/").mkdirs();
 		
-		for (String key : keySet) {
-			// 将任务提交线程池去执行
-			tasks.add(service.submit(new LoadCallable(savePath + "/" + key + ".txt", downloadTasks.get(key),config.getTries())));
-		}
+		downloadTasks.forEach((k,v)->{
+			tasks.add(service.submit(new LoadCallable(savePath + "/" + k + ".txt", downloadTasks.get(k),config.getTries())));
+		});
+		
 		//遍历线程执行结果，当有线程执行任务失败时终止线程池
 		for (Future<String> future : tasks) {
 			try {

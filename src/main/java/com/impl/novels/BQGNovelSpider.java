@@ -21,7 +21,7 @@ import com.novelEnum.Site;
 import com.utlis.ChapterSpiderUtil;
 import com.utlis.Config;
 
-public class XBQGNovelSpider extends AbstractNovelSpider {
+public class BQGNovelSpider extends AbstractNovelSpider {
 	
 	@Override
 	public List<Novel> getNovel(String url) {
@@ -33,7 +33,7 @@ public class XBQGNovelSpider extends AbstractNovelSpider {
 			Elements novelList = super.getNovelList(url);
 			ExecutorService service = Executors.newFixedThreadPool(config.getMaxThread());
 			for (Element key : novelList) {
-				tasks.add(service.submit(new XBQGNovelCallable(key,config.getTries())));
+				tasks.add(service.submit(new BQGNovelCallable(key,config.getTries())));
 				Thread.sleep(config.getSleepTime());
 			}
 			
@@ -48,12 +48,12 @@ public class XBQGNovelSpider extends AbstractNovelSpider {
 	}
 }
 
-class XBQGNovelCallable extends AbstractSpider implements Callable<Novel> {
+class BQGNovelCallable extends AbstractSpider implements Callable<Novel> {
 
 	private Element e;
 	private int tries;
 
-	public XBQGNovelCallable(Element e,int tries) {
+	public BQGNovelCallable(Element e,int tries) {
 		this.e = e;
 		this.tries = tries;
 	}
@@ -68,23 +68,26 @@ class XBQGNovelCallable extends AbstractSpider implements Callable<Novel> {
 				String result = super.crawl(url);
 				result = result.replace("&nbsp;", " ");
 				Document doc = Jsoup.parse(result);
+				doc.setBaseUri(url);
 				String info = Config.getContext(Site.getEnumByUrl(url)).get("novel-info");
-				String type = Config.getContext(Site.getEnumByUrl(url)).get("novel-type");
 				Elements maininfo = doc.select(info);
-				Elements p = maininfo.select("div[id=info]").select("p");
-				Elements intro = maininfo.select("div[id=intro]").select("p");
+				Elements small = maininfo.select("div[class=small]").select("span");
+				Elements intro = maininfo.select("div[class=intro]");
 
 				novel.setName(novelName);
 				novel.setUrl(url);
-				novel.setAuthor(p.get(0).text().substring(p.get(0).text().indexOf("：") + 1));
-				String strDate = p.get(2).text();
+				String author=small.get(0).text().substring(small.get(0).text().indexOf("：") + 1);
+				novel.setAuthor(author);
+				novel.setStatus(ChapterSpiderUtil.getNovelStatus(small.get(2).text().substring(small.get(2).text().indexOf("：") + 1)));
+				String strDate = small.get(4).text();
 				strDate = strDate.substring(strDate.indexOf("：") + 1);
 				novel.setLatelytime(ChapterSpiderUtil.getData(strDate, "yyyy-MM-dd HH:mm:ss"));
-				novel.setLatelychapter(p.get(3).select("a").text());
-				novel.setLatelychapterurl((p.get(3).select("a").attr("abs:href")));
-				novel.setInfo(intro.get(1).text());
+				novel.setLatelychapter(small.get(5).select("a").text());
+				novel.setLatelychapterurl((small.get(5).select("a").attr("abs:href")));
+				novel.setInfo(intro.text().replace("推荐地址："+url, "").replace("作者："+author+"所写的《"+novelName+"》无弹窗免费全文阅读为转载作品,章节由网友发布。", ""));
 				novel.setPlatformId(Site.getEnumByUrl(url).getId());
-				novel.setType(doc.select(type).get(ChapterSpiderUtil.Index(type)).text());
+				novel.setType(small.get(1).text().substring(small.get(1).text().indexOf("：") + 1));
+				System.out.println(novel);
 				break;
 			} catch (NullPointerException e) {
 				System.out.println(novel);

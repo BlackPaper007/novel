@@ -9,7 +9,8 @@ package com.novelEnum;
 public enum Site {
 	booktxt(1, "booktxt.net"),
 	uutxt(2, "u33.cc"),
-	xbiqige(3, "xbiquge.la");
+	xbiqige(3, "xbiquge.la"),
+	biquge(4,"biquge.lu");
 	
 	private int id;
 	private String url;

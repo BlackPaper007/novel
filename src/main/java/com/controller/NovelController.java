@@ -30,7 +30,7 @@ public class NovelController {
 		return "index";
 	}
 	
-	@RequestMapping(value = "/keywordSearch/{keyword}", method = RequestMethod.GET)
+	@RequestMapping(value = "/keywordSearch/{keyword}", method = RequestMethod.POST)
 	@ResponseBody
 	public List<Novel> keywordSearch(@PathVariable("keyword") String keyword) {
 		List<Novel> novels = novelService.getsNovelByKeyword(keyword);
@@ -38,9 +38,10 @@ public class NovelController {
 	}
 	
 	
-	@RequestMapping(value = "/chapterList", method = RequestMethod.GET)
+	@RequestMapping(value = "/chapterList")
 	@ResponseBody
 	public ModelAndView chapterList(String url) {
+		//System.out.println(url);
 		ModelAndView view = new ModelAndView();
 		view.setViewName("chapterList");
 		view.getModel().put("chapters", ChapterSpiderFactory.getChapterSpider(url));

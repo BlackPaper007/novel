@@ -15,9 +15,10 @@ import com.entity.ChapterDetail;
 import com.entity.Novel;
 import com.entity.ThreadConfig;
 import com.impl.NovelDownload;
-import com.impl.chapter.ChapterDetailSpider;
+import com.interfaces.IChapterDetail;
 import com.interfaces.INovelDownload;
 import com.interfaces.INovelSpider;
+import com.utlis.ChapterDetailSpiderFactory;
 import com.utlis.ChapterSpiderFactory;
 import com.utlis.NovelSpiderFactory;
 
@@ -32,7 +33,7 @@ class NovelApplicationTests {
 	
 	@Test
 	void chapterLoads() {
-		List<Chapter> chapters = ChapterSpiderFactory.getChapterSpider(url);
+		List<Chapter> chapters = ChapterSpiderFactory.getChapterSpider("https://www.biquge.lu/book/49330/");
 		for (Chapter chapter : chapters) {
 			System.out.println(chapter);
 		}
@@ -40,8 +41,8 @@ class NovelApplicationTests {
 	
 	@Test
 	void DetailLoads(){
-		ChapterDetailSpider detailSpider = new ChapterDetailSpider();
-		ChapterDetail detail = detailSpider.getChapterDetail("https://www.biquge18.com/book/134025/1_6.html");
+		IChapterDetail chapterDetail = ChapterDetailSpiderFactory.getChapterDetail("https://www.biquge.lu/book/49330/467274651.html");
+		ChapterDetail detail = chapterDetail.getChapterDetail("https://www.biquge.lu/book/49330/467274651.html");
 		if(StringUtils.isEmpty(detail.getContent())) {
 			System.out.println("没有内容");
 		}else System.out.println("内容:"+detail.getContent());
@@ -58,8 +59,8 @@ class NovelApplicationTests {
 	
 	@Test
 	public void novelList() {
-		INovelSpider novelSpider = NovelSpiderFactory.getNovelSpider("https://www.booktxt.net/xiaoshuodaquan/");
-		List<Novel> list = novelSpider.getNovel("https://www.booktxt.net/xiaoshuodaquan/");
+		INovelSpider novelSpider = NovelSpiderFactory.getNovelSpider("https://www.biquge.lu/xiaoshuodaquan/");
+		List<Novel> list = novelSpider.getNovel("https://www.biquge.lu/xiaoshuodaquan/");
 		
 		for (Novel novel : list) {
 			System.out.println(novel);
