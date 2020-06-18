@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE xml>
 <sites>
@@ -69,4 +70,103 @@
 		<chapter-detail-prev>div[class=page_chapter] ul li a</chapter-detail-prev>
 		<chapter-detail-next>div[class=page_chapter] ul li a</chapter-detail-next>
 	</site>
+=======
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xml>
+<sites>
+	<site>
+<<<<<<< HEAD
+=======
+		<title>笔趣库</title>
+		<charset>UTF-8</charset>
+		<url>http://www.biquku.la/</url>
+		<novel-title>#info h1</novel-title>
+		<novel-info>#maininfo</novel-info>
+		<novel-type>div[class=con_top] a,2</novel-type>
+		<novel-list>#main ul li a</novel-list>
+		<selector>#list dl dd a</selector>
+		<selector-fiter>
+			<!-- fiter-list 不能为空 -->
+			<fiter-list>p</fiter-list>
+		</selector-fiter>
+		<chapter-detail>#content</chapter-detail>
+		<chapter-detail-title>div[class=bookname] h1</chapter-detail-title>
+		<chapter-detail-prev>div[class=bottem2] a,1</chapter-detail-prev>
+		<chapter-detail-next>div[class=bottem2] a,3</chapter-detail-next>
+	</site>
+	<site>
+>>>>>>> second commit
+		<title>新笔趣阁</title>
+		<charset>UTF-8</charset>
+		<url>http://www.xbiquge.la/</url>
+		<novel-title>#info h1</novel-title>
+		<novel-info>#maininfo</novel-info>
+		<novel-type>div[class=con_top] a,2</novel-type>
+		<novel-list>#main ul li a</novel-list>
+		<selector>#list dl dd a</selector>
+		<selector-fiter>
+			<!-- fiter-list 不能为空 -->
+			<fiter-list>p</fiter-list>
+		</selector-fiter>
+		<chapter-detail>#content</chapter-detail>
+		<chapter-detail-title>div[class=bookname] h1</chapter-detail-title>
+		<chapter-detail-prev>div[class=content_read] div[class=bottem2] a,1</chapter-detail-prev>
+		<chapter-detail-next>div[class=content_read] div[class=bottem2] a,3</chapter-detail-next>
+	</site>
+	<site>
+		<title>顶点小说</title>
+		<charset>gbk</charset>
+		<url>https://www.booktxt.net/</url>
+		<novel-title>#info h1</novel-title>
+		<novel-info>#maininfo</novel-info>
+		<novel-type>div[class=con_top]</novel-type>
+		<novel-list>#main ul li a</novel-list>
+		<selector>#list dl dd a</selector>
+		<selector-fiter>
+			<fiter-list>null</fiter-list>
+		</selector-fiter>
+		<chapter-detail>#content</chapter-detail>
+		<chapter-detail-title>div[class=content_read] div[class=bookname] h1</chapter-detail-title>
+<<<<<<< HEAD
+		<chapter-detail-prev>div[class=bottem2] a,0</chapter-detail-prev>
+		<chapter-detail-next>div[class=bottem2] a,2</chapter-detail-next>
+=======
+		<chapter-detail-prev>div[class=bottem2] a,1</chapter-detail-prev>
+		<chapter-detail-next>div[class=bottem2] a,3</chapter-detail-next>
+>>>>>>> second commit
+	</site>
+	<site>
+		<title>uu书盟</title>
+		<charset>UTF-8</charset>
+		<url>http://www.u33.cc/</url>
+		<novel-info>#maininfo</novel-info>
+		<novel-title>#info h1</novel-title>
+		<selector>#list dd a</selector>
+		<selector-fiter>
+			<fiter-list>null</fiter-list>
+			<fiter-list>null</fiter-list>
+		</selector-fiter>
+		<chapter-detail>#content</chapter-detail>
+		<chapter-detail-title>div[class=content_read] div[class=bookname] h1</chapter-detail-title>
+		<chapter-detail-prev>#pager_prev</chapter-detail-prev>
+		<chapter-detail-next>#pager_next</chapter-detail-next>
+	</site>
+	<site>
+		<title>笔趣阁</title>
+		<charset>gbk</charset>
+		<url>https://www.biquge.lu/</url>
+		<novel-title>div[class=info] h2</novel-title>
+		<novel-info>div[class=info]</novel-info>
+		<novel-list>#main div[class=novellist] ul li a</novel-list>
+		<selector>div[class=listmain] dd a</selector>
+		<selector-fiter>
+			<!-- fiter-list 不能为空 -->
+			<fiter-list>null</fiter-list>
+		</selector-fiter>
+		<chapter-detail>#content</chapter-detail>
+		<chapter-detail-title>div[class=content] h1</chapter-detail-title>
+		<chapter-detail-prev>div[class=page_chapter] ul li a</chapter-detail-prev>
+		<chapter-detail-next>div[class=page_chapter] ul li a</chapter-detail-next>
+	</site>
+>>>>>>> second commit
 </sites>

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">  
 <head>
@@ -140,4 +141,182 @@
 		};
 	</script>
 </body>
+=======
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">  
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="">
+
+    <title>免费且无广告的小说阅读网</title>
+
+    <!-- Bootstrap core CSS -->
+    
+    <link th:href="${'bootstrap-3.3.7-dist/css/bootstrap.min.css'}" rel="stylesheet">
+<<<<<<< HEAD
+=======
+    <link th:href="${'css/novel.css'}" rel="stylesheet">
+>>>>>>> second commit
+  </head>
+<body>
+	<div class="jumbotron">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-12">
+					<div class="input-group">
+						<input type="text" id="keyword" class="form-control" onkeydown="var e=window.event || arguments[0];if(e.keyCode==13){search()}" placeholder="可以输入书名，作者名，甚至可以是符合条件的URL..."/>
+						<span class="input-group-btn">
+							<button class="btn btn-default" type="button" id="btnSearch" >小说搜搜</button>
+						</span>
+					</div>
+<<<<<<< HEAD
+				</div>
+=======
+					
+					<div class="form-group">
+						<label class="radio-inline">
+		                    <input type="radio"  value="0" name="site" checked="checked">不选
+		                </label>
+		                <label class="radio-inline">
+		                    <input type="radio"  value="1" name="site">顶点小说
+		                </label>
+		            </div>
+				</div>
+			
+>>>>>>> second commit
+			</div>
+		</div>
+	</div>
+	<div class="container no-table-responsive">
+<<<<<<< HEAD
+		<table class="table table-striped table-bordered table-condensed table-hover" style="text-align:center;font-style:800;">
+=======
+		<table class="table table-striped table-bordered table-condensed table-hover" style="font-style:800;">
+>>>>>>> second commit
+			<thead>
+				<tr>
+					<th>#</th>
+					<td>书名</td>
+					<td>作者</td>
+					<td>最新章节</td>
+					<td>平台</td>
+				</tr>
+			</thead>
+			<tbody id="list" >
+			</tbody>
+<<<<<<< HEAD
+			<!-- <tfoot>
+				<tr>
+					<td colspan="5">
+						<div class="btn-group" style="float: right;">
+							<button type="button" class="btn btn-default" id="currentPage">第1/100页</button>
+							<button type="button" class="btn btn-default" id="firstPage">首页</button>
+							<button type="button" class="btn btn-default" id="previousPage">上一页</button>
+							<button type="button" class="btn btn-default" id="nextPage">下一页</button>
+							<button type="button" class="btn btn-default" id="lastPage">尾页</button>
+							<button type="button" class="btn btn-default" id="gotoPage">跳转</button>
+							<input type="text" class="form-control" id="gotopage_text"
+								style="width: 80px; display: inline-block" placeholder="页码">
+							<input type="hidden" id="hidetxt" value="" />
+						</div>
+					</td>
+				</tr>
+			</tfoot> -->
+		</table>
+=======
+		</table>
+		<div id="loadModal" style="display: none;">
+			正在抓取中。。。
+			<div class="donut"></div>
+		</div>
+>>>>>>> second commit
+	</div>
+	<!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script th:src="${'js/jquery-1.11.3.min.js'}"></script>
+    <script th:src="${'bootstrap-3.3.7-dist/js/bootstrap.min.js'}"></script>
+<<<<<<< HEAD
+	<script>
+		$(function(){
+			$("#btnSearch").click(search);
+			$("#keyword").click(function(e) {
+				$("#keyword").select();
+			});
+		});
+		
+		function search() {
+			var wd = $("#keyword").val().trim();
+			if (!wd) {
+				alert("请输入小说的名字或者作者的名字...");
+				return;
+			}
+			if (wd.indexOf("http") == 0) {
+				searchByUrl(wd);
+			}else{
+				searchBywd(wd);
+			}
+		};
+
+		function searchByUrl(url) {
+			window.open("./chapterList?url=" + url);
+		}
+		function searchBywd(wd) {
+			$.ajax({
+				url : "./keywordSearch/" + wd,
+				type : "post",
+				dataType : "json",
+				error : function() {
+					alert("小说抓取失败");
+				},
+				success : function(result) {
+					if(result.length==0){
+						alert("数据库中没有该小说");
+					}else{
+						$("#list").html("");
+						$(result).each(function(index, novel) {
+							var $tr = $("<tr><td>"+ (index + 1)
+								+ "</td><td><a href='./chapterList?url="
+								+ novel.url	+ "'>"
+								+ novel.name + "</a></td><td>"
+								+ novel.author + "</td><td>"
+								+ isLatelychapterNull(novel.latelychapter)+ "</td><td>"
+								+ getPlatformId(novel.platformId) + "</td></tr>");
+							$("#list").append($tr);
+						});
+					}
+				}
+			});
+		};
+		function isLatelychapterNull(latelychapter) {
+			if (latelychapter == null) {
+				return "暂时没有最新章节";
+			} else {
+				return latelychapter;
+			}
+		};
+		function getPlatformId(platformId) {
+			if (platformId == 1) {
+				return "顶点小说";
+			} else if (platformId == 2) {
+				return "uu书盟";
+			} else if (platformId == 3) {
+				return "新笔趣阁";
+			} else if (platformId == 4) {
+				return "笔趣阁";
+			} else {
+				return "未知";
+			}
+		};
+	</script>
+=======
+	<script th:src="${'js/novel.js'}"></script>
+>>>>>>> second commit
+</body>
+>>>>>>> second commit
 </html>

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
  <head>
@@ -67,4 +68,85 @@
     <script>
     </script>
 </body>
+=======
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+ <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+	<!-- 章节标题 -->
+    <title th:text="${detail.title}"></title>
+
+    <!-- Bootstrap core CSS -->
+    <link th:href="${'bootstrap-3.3.7-dist/css/bootstrap.min.css'}" rel="stylesheet">
+    <style>
+    	body {
+    		background-color:#E5E4DB;
+    	}
+    	.content {
+    		font-size:16px;
+    		background-color:#F6F4EC;
+    		color:#333;
+    		padding:20px;
+    		border-radius:5px;
+    		-webkit-border-radiu:5px;
+    	}
+    	.jumbotron {
+    		padding-top:10px;
+    		padding-bottom:10px;
+<<<<<<< HEAD
+=======
+    		margin-bottom: 10px;
+>>>>>>> second commit
+    		background-color:#F5F5F5;
+    	}
+    </style>
+  </head>
+<body>
+	<div class="jumbotron">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-12">
+					<a href="./">回到搜索页</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="container" th:switch="${status}">
+		<div th:case="'0'">
+			<h3 style="text-align:center;" th:text="${detail.title}"></h3>
+			<!-- 章节内容区域 -->
+			<div class="content" th:utext="${detail.content}">
+			</div>	
+			<div style="text-align:center; margin: 30px;">
+<<<<<<< HEAD
+				<a class="btn btn-default" th:href="@{chapterDetail(url=${detail.prev})}" th:if="${detail.prev!=baseUrl}">前一章</a>
+				<a class="btn btn-default" th:href="@{chapterList(url=${baseUrl})}">章节列表</a>
+				<a class="btn btn-default" th:href="@{chapterDetail(url=${detail.next})}" th:if="${detail.next!=baseUrl}">后一章</a>
+=======
+				<a class="btn btn-default" th:href="@{chapterDetail(url=${detail.prev},baseUrl=${baseUrl})}" th:if="${detail.prev!=baseUrl}">前一章</a>
+				<a class="btn btn-default" th:href="@{chapterList(url=${baseUrl})}">章节列表</a>
+				<a class="btn btn-default" th:href="@{chapterDetail(url=${detail.next},baseUrl=${baseUrl})}" th:if="${detail.next!=baseUrl}">后一章</a>
+>>>>>>> second commit
+			</div>	
+		</div>
+		<div th:case="'1'">
+			<div class="content" style="text-align:center;">内容抓取失败，请刷新页面重试</div>	
+		</div>
+		
+	</div>
+	<!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script th:src="${'js/jquery-1.11.3.min.js'}"></script>
+    <script th:src="${'bootstrap-3.3.7-dist/js/bootstrap.min.js'}"></script>
+    <script>
+    </script>
+</body>
+>>>>>>> second commit
 </html>

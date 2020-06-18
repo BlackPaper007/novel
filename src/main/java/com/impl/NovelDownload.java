@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 package com.impl;
 
 import java.io.File;
@@ -129,3 +130,209 @@ class LoadCallable implements Callable<String> {
 		return path;
 	}
 }
+=======
+package com.impl;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.entity.Chapter;
+import com.entity.ChapterDetail;
+import com.entity.ThreadConfig;
+<<<<<<< HEAD
+import com.entity.Novel;
+=======
+import com.impl.abs.AbstractChapterSpider;
+>>>>>>> second commit
+import com.interfaces.IChapterDetail;
+import com.interfaces.INovelDownload;
+import com.novelEnum.Site;
+import com.utlis.ChapterDetailSpiderFactory;
+import com.utlis.ChapterSpiderFactory;
+import com.utlis.ChapterSpiderUtil;
+
+/**
+ * 下载小说
+ * @author smile
+ *
+ */
+<<<<<<< HEAD
+public class NovelDownload implements INovelDownload {
+	
+	private static final Logger log = LoggerFactory.getLogger(NovelDownload.class);
+
+	@Override
+	public String download(String url, ThreadConfig config) {
+		boolean flag = true;
+		List<Chapter> chapters = ChapterSpiderFactory.getChapterSpider(url);
+		
+		int max=0;
+		// 向上取整得到需要的线程个数
+		int maxThreadSize = max <= config.getMaxThread() ? (int) Math.ceil(chapters.size() * 1.0 / config.getSize()) : config.getMaxThread();
+		Map<String, List<Chapter>> downloadTasks = new HashMap<>();
+		for (int i = 0; i < maxThreadSize; i++) {
+			// 每个线程开始的章节数
+			int fromIndex = i * config.getSize();
+			// 每个线程结束的章节数
+			int toIndex = i == maxThreadSize - 1 ? chapters.size() : fromIndex + config.getSize();
+			downloadTasks.put((fromIndex + 1) + "-" + toIndex , chapters.subList(fromIndex, toIndex));
+		}
+		
+		ExecutorService service = Executors.newFixedThreadPool(maxThreadSize);
+		List<Future<String>> tasks = new ArrayList<>();
+		//保存文件路径 D:/root/site/bookName/
+		Novel novel = new Novel();
+		String savePath = config.getPath() + "/" + Site.getEnumByUrl(url).getUrl() + "/" + novel.getName();
+=======
+public class NovelDownload extends AbstractChapterSpider implements INovelDownload {
+	
+	private boolean flag;
+	/**下载任务分配*/
+	private List<Future<String>> tasks = new ArrayList<>();
+
+	@Override
+	public String download(String url, ThreadConfig config) {
+		
+		List<Chapter> chapters = ChapterSpiderFactory.getChapterSpider(url);
+		
+		ExecutorService service = Executors.newFixedThreadPool(config.getMaxThread(chapters));
+		
+		Map<String, List<Chapter>> downloadTasks = config.splitTask(chapters, new HashMap<>());
+		
+		//保存文件路径 D:/root/site/bookName/
+		String savePath = config.getPath() + "/" + Site.getEnumByUrl(url).getUrl() + "/" + novelName;
+>>>>>>> second commit
+		new File(savePath+"/merge/").mkdirs();
+		
+		downloadTasks.forEach((k,v)->{
+			tasks.add(service.submit(new LoadCallable(savePath + "/" + k + ".txt", downloadTasks.get(k),config.getTries())));
+		});
+<<<<<<< HEAD
+=======
+		//释放内存
+		service.shutdown();
+>>>>>>> second commit
+		
+		//遍历线程执行结果，当有线程执行任务失败时终止线程池
+		for (Future<String> future : tasks) {
+			try {
+<<<<<<< HEAD
+				if(future.get()!=String.valueOf(flag)) log.info(future.get() + ",下载完成！");
+				else {
+					service.shutdownNow();
+					flag=false;
+					break;
+				}
+			} catch (InterruptedException | ExecutionException e) {
+				e.printStackTrace();
+			}
+		}
+		//释放内存
+		service.shutdown();
+		ChapterSpiderUtil.multiFileMerge(savePath, novel.getName(),null, true);
+		if(flag) return "文件保存在  " + savePath + "/merge/" + novel.getName() + ".txt";
+		else {
+			new File(savePath + "/merge/" + novel.getName() + ".txt").delete();
+			return "下载失败";
+		}
+=======
+				flag = false;
+				if(future.get()==String.valueOf(flag)) {
+					service.shutdownNow();//试图停止所有正在执行的线程,不一定会立马终止
+					new File(savePath + "/merge/" + novelName + ".txt").delete();
+					return "下载失败";
+				} else if(future.get()!=String.valueOf(flag)){
+					log.info(future.get() + ",下载完成！");
+					flag = true;
+				} 
+			} catch (InterruptedException | ExecutionException e) {
+				service.shutdownNow();
+				log.info("发生异常任务终止",e);
+			}
+		}
+		
+		ChapterSpiderUtil.multiFileMerge(savePath, novelName,null, true);
+		return "文件保存在  " + savePath + "/merge/" + novelName + ".txt";
+		
+		/*if(flag) {
+			ChapterSpiderUtil.multiFileMerge(savePath, novelName,null, true);
+			return "文件保存在  " + savePath + "/merge/" + novelName + ".txt";
+		} else {
+			new File(savePath + "/merge/" + novelName + ".txt").delete();
+			return "下载失败";
+		} */
+>>>>>>> second commit
+	}
+}
+
+class LoadCallable implements Callable<String> {
+	private List<Chapter> chapters;
+	private String path;
+	private int tries;
+	private static final Logger log = LoggerFactory.getLogger(LoadCallable.class);
+	
+	public LoadCallable(String path, List<Chapter> chapters ,int tries) {
+		this.path = path;
+		this.chapters = chapters;
+		this.tries = tries;
+	}
+
+<<<<<<< HEAD
+	/**
+	 * 线程执行下载任务
+	 */
+	@Override
+	public String call() throws Exception {
+		
+=======
+	@Override
+	public String call() throws Exception {
+>>>>>>> second commit
+		try (PrintWriter out = new PrintWriter(new File(path), "UTF-8")) {
+			for (Chapter chapter : chapters) {
+				IChapterDetail spider = ChapterDetailSpiderFactory.getChapterDetail(chapter.getOriUrl());
+				ChapterDetail detail = null;
+				//线程下载任务失败，尝试重新下载j次之后放弃
+				for (int j = 0; j < tries; j++) {
+					try {
+						detail = spider.getChapterDetail(chapter.getOriUrl());
+						out.println(detail.getTitle());
+						out.println(detail.getContent());
+						break;
+					} catch (RuntimeException e) {
+<<<<<<< HEAD
+						log.error("尝试第[" + (j + 1) + "/" + tries + "]次下载失败了！");
+						if ((j + 1) == tries) path = "false";
+=======
+						log.error(chapter.getTitle()+"尝试第[" + (j + 1) + "/" + tries + "]次下载失败了！");
+						if ((j + 1) == tries)
+							path = "false";
+>>>>>>> second commit
+					}
+				} if (path == "false") break;
+			}
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+<<<<<<< HEAD
+		} 
+=======
+		}
+		System.out.println("任务执行结果:"+path);
+>>>>>>> second commit
+		return path;
+	}
+}
+>>>>>>> second commit
