@@ -9,16 +9,12 @@ import org.springframework.context.annotation.ComponentScan;
 
 
 @SpringBootConfiguration
-@EnableAutoConfiguration
-@ComponentScan("com")
 @MapperScan("com.dao")
 @SpringBootApplication
 public class NovelApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(NovelApplication.class, args);
-		/*Processor ns = new NovelStorage();
-		ns.novelStorage();*/
 	}
 
 }

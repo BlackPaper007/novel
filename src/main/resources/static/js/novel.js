@@ -48,7 +48,8 @@ function searchBywd(wd) {
 						+ novel.name + "</a></td><td>"
 						+ novel.author + "</td><td>"
 						+ isLatelychapterNull(novel.latelychapter)+ "</td><td>"
-						+ getPlatformId(novel.platformId) + "</td></tr>");
+						+ getPlatformId(novel.platformId) + "</td><td><a href='./download?url="
+						+ novel.url + "'>下载</a></td></tr>");
 					$("#list").append($tr);
 				});
 			}
@@ -62,6 +63,7 @@ function DDsearchBywd(wd){
 		type : "post",
 		error : function() {
 			alert("小说抓取失败");
+			$("#loadModal").css("display","none");
 		},
 		success : function(result) {
 			$("#loadModal").css("display","none");

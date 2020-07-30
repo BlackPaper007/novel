@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.dao.NovelMapper">
@@ -16,11 +15,11 @@
     <result column="platform_id" jdbcType="INTEGER" property="platformId" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, name, author, url, type, info, latelychapter, latelychapterurl, latelytime, status, 
+    id, name, author, url, type, info, latelychapter, latelychapterurl, latelytime, status,
     platform_id
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 
+    select
     <include refid="Base_Column_List" />
     from t_novel
     where id = #{id,jdbcType=INTEGER}
@@ -30,13 +29,13 @@
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.entity.Novel">
-    insert into t_novel (id, name, author, 
-      url, type, info, latelychapter, 
-      latelychapterurl, latelytime, status, 
+    insert into t_novel (id, name, author,
+      url, type, info, latelychapter,
+      latelychapterurl, latelytime, status,
       platform_id)
-    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{author,jdbcType=VARCHAR}, 
-      #{url,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR}, #{info,jdbcType=VARCHAR}, #{latelychapter,jdbcType=VARCHAR}, 
-      #{latelychapterurl,jdbcType=VARCHAR}, #{latelytime,jdbcType=DATE}, #{status,jdbcType=INTEGER}, 
+    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{author,jdbcType=VARCHAR},
+      #{url,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR}, #{info,jdbcType=VARCHAR}, #{latelychapter,jdbcType=VARCHAR},
+      #{latelychapterurl,jdbcType=VARCHAR}, #{latelytime,jdbcType=DATE}, #{status,jdbcType=INTEGER},
       #{platformId,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.entity.Novel">
@@ -163,305 +162,104 @@
     where id = #{id,jdbcType=INTEGER}
   </update>
   <select id="selectByBooknameOrAuthor" parameterType="java.lang.String" resultMap="BaseResultMap">
-  	select 
+  	select
   	 <include refid="Base_Column_List" />
   	 from t_novel
   	 where name like #{keyword, jdbcType=VARCHAR} or author like #{keyword, jdbcType=VARCHAR}
   </select>
+
+  <select id="selectBySite" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+  	select
+  	 <include refid="Base_Column_List" />
+  	 from t_novel
+  	 where platform_id = #{platformId,jdbcType=INTEGER}
+  </select>
+
+  <!-- 插入时用 insert ignore into（已有相同记录则不添加，不报错） -->
   <insert id="batchInsert" parameterType="java.util.List">
-  	insert into t_novel
+  	insert ignore into t_novel
   	 (name, author,url, type, info,latelychapter,
   	 latelychapterurl, latelytime,status, platform_id)
     values
     <foreach collection="list" item="l" index="index" separator=",">
 	(
-		#{l.name},#{l.author},#{l.url},#{l.type},#{l.info},
-		#{l.latelychapter},#{l.latelychapterurl},#{l.latelytime},
-		#{l.status}, #{l.platformId}
+		#{l.name},
+		#{l.author},
+		#{l.url},
+		#{l.type},
+		#{l.info},
+		#{l.latelychapter},
+		#{l.latelychapterurl},
+		#{l.latelytime},
+		#{l.status},
+		#{l.platformId}
 	)
     </foreach>
   </insert>
+
+  <!-- 通过 case when语句变相的进行批量更新 -->
+  <update id="updateBatch" parameterType="java.util.List" >
+      update t_novel
+      <trim prefix="set" suffixOverrides=",">
+          <trim prefix="latelychapter = case " suffix="end,">
+              <foreach collection="novels" item="i" index="index">
+                  <if test="i.latelychapter != null">
+				     when url=#{i.url} then #{i.latelychapter}
+				  </if>
+              </foreach>
+          </trim>
+          <trim prefix="latelychapterurl = case " suffix="end,">
+              <foreach collection="novels" item="i" index="index">
+                  <if test="i.latelychapterurl != null">
+		        	when url=#{i.url} then #{i.latelychapterurl}
+		   		  </if>
+              </foreach>
+          </trim>
+          <trim prefix="latelytime = case " suffix="end,">
+              <foreach collection="novels" item="i" index="index">
+                  <if test="i.latelytime != null">
+		       		when url=#{i.url} then #{i.latelytime}
+	       		  </if>
+              </foreach>
+          </trim>
+          <trim prefix="name = case " suffix="end,">
+              <foreach collection="novels" item="i" index="index">
+                  <if test="i.name != null">
+			        when url=#{i.url} then #{i.name}
+			      </if>
+              </foreach>
+          </trim>
+          <trim prefix="author = case " suffix="end,">
+              <foreach collection="novels" item="i" index="index">
+                  <if test="i.author != null">
+			        when url=#{i.url} then #{i.author}
+			      </if>
+              </foreach>
+          </trim>
+          <trim prefix="type = case " suffix="end,">
+              <foreach collection="novels" item="i" index="index">
+                  <if test="i.type != null">
+			        when url=#{i.url} then #{i.type}
+			      </if>
+              </foreach>
+          </trim>
+          <trim prefix="info = case " suffix="end,">
+              <foreach collection="novels" item="i" index="index">
+                  <if test="i.info != null">
+			        when url=#{i.url} then #{i.info}
+			      </if>
+              </foreach>
+          </trim>
+      </trim>
+      		where url in (
+      <foreach collection="novels" separator="," item="i" index="index" >
+         	#{i.url}
+      </foreach>
+      		)
+  </update>
+
   <delete id="deleteAll">
   	delete from t_novel;
   	alter table t_novel auto_increment=1;
   </delete>
-=======
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.dao.NovelMapper">
-  <resultMap id="BaseResultMap" type="com.entity.Novel">
-    <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="name" jdbcType="VARCHAR" property="name" />
-    <result column="author" jdbcType="VARCHAR" property="author" />
-    <result column="url" jdbcType="VARCHAR" property="url" />
-    <result column="type" jdbcType="VARCHAR" property="type" />
-<<<<<<< HEAD
-    <result column="info" jdbcType="VARCHAR" property="info" />
-=======
->>>>>>> second commit
-    <result column="latelychapter" jdbcType="VARCHAR" property="latelychapter" />
-    <result column="latelychapterurl" jdbcType="VARCHAR" property="latelychapterurl" />
-    <result column="latelytime" jdbcType="DATE" property="latelytime" />
-    <result column="status" jdbcType="INTEGER" property="status" />
-    <result column="platform_id" jdbcType="INTEGER" property="platformId" />
-  </resultMap>
-<<<<<<< HEAD
-  <sql id="Base_Column_List">
-    id, name, author, url, type, info, latelychapter, latelychapterurl, latelytime, status, 
-    platform_id
-  </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-=======
-  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.entity.Novel">
-    <result column="info" jdbcType="LONGVARCHAR" property="info" />
-  </resultMap>
-  <sql id="Base_Column_List">
-    id, name, author, url, type, latelychapter, latelychapterurl, latelytime, status, 
-    platform_id
-  </sql>
-  <sql id="Blob_Column_List">
-    info
-  </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
-    select 
-    <include refid="Base_Column_List" />
-    ,
-    <include refid="Blob_Column_List" />
->>>>>>> second commit
-    from t_novel
-    where id = #{id,jdbcType=INTEGER}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from t_novel
-    where id = #{id,jdbcType=INTEGER}
-  </delete>
-  <insert id="insert" parameterType="com.entity.Novel">
-    insert into t_novel (id, name, author, 
-<<<<<<< HEAD
-      url, type, info, latelychapter, 
-      latelychapterurl, latelytime, status, 
-      platform_id)
-    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{author,jdbcType=VARCHAR}, 
-      #{url,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR}, #{info,jdbcType=VARCHAR}, #{latelychapter,jdbcType=VARCHAR}, 
-      #{latelychapterurl,jdbcType=VARCHAR}, #{latelytime,jdbcType=DATE}, #{status,jdbcType=INTEGER}, 
-      #{platformId,jdbcType=INTEGER})
-=======
-      url, type, latelychapter, 
-      latelychapterurl, latelytime, status, 
-      platform_id, info)
-    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{author,jdbcType=VARCHAR}, 
-      #{url,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR}, #{latelychapter,jdbcType=VARCHAR}, 
-      #{latelychapterurl,jdbcType=VARCHAR}, #{latelytime,jdbcType=DATE}, #{status,jdbcType=INTEGER}, 
-      #{platformId,jdbcType=INTEGER}, #{info,jdbcType=LONGVARCHAR})
->>>>>>> second commit
-  </insert>
-  <insert id="insertSelective" parameterType="com.entity.Novel">
-    insert into t_novel
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
-      </if>
-      <if test="name != null">
-        name,
-      </if>
-      <if test="author != null">
-        author,
-      </if>
-      <if test="url != null">
-        url,
-      </if>
-      <if test="type != null">
-        type,
-      </if>
-<<<<<<< HEAD
-      <if test="info != null">
-        info,
-      </if>
-=======
->>>>>>> second commit
-      <if test="latelychapter != null">
-        latelychapter,
-      </if>
-      <if test="latelychapterurl != null">
-        latelychapterurl,
-      </if>
-      <if test="latelytime != null">
-        latelytime,
-      </if>
-      <if test="status != null">
-        status,
-      </if>
-      <if test="platformId != null">
-        platform_id,
-      </if>
-<<<<<<< HEAD
-=======
-      <if test="info != null">
-        info,
-      </if>
->>>>>>> second commit
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=INTEGER},
-      </if>
-      <if test="name != null">
-        #{name,jdbcType=VARCHAR},
-      </if>
-      <if test="author != null">
-        #{author,jdbcType=VARCHAR},
-      </if>
-      <if test="url != null">
-        #{url,jdbcType=VARCHAR},
-      </if>
-      <if test="type != null">
-        #{type,jdbcType=VARCHAR},
-      </if>
-<<<<<<< HEAD
-      <if test="info != null">
-        #{info,jdbcType=VARCHAR},
-      </if>
-=======
->>>>>>> second commit
-      <if test="latelychapter != null">
-        #{latelychapter,jdbcType=VARCHAR},
-      </if>
-      <if test="latelychapterurl != null">
-        #{latelychapterurl,jdbcType=VARCHAR},
-      </if>
-      <if test="latelytime != null">
-        #{latelytime,jdbcType=DATE},
-      </if>
-      <if test="status != null">
-        #{status,jdbcType=INTEGER},
-      </if>
-      <if test="platformId != null">
-        #{platformId,jdbcType=INTEGER},
-      </if>
-<<<<<<< HEAD
-=======
-      <if test="info != null">
-        #{info,jdbcType=LONGVARCHAR},
-      </if>
->>>>>>> second commit
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.entity.Novel">
-    update t_novel
-    <set>
-      <if test="name != null">
-        name = #{name,jdbcType=VARCHAR},
-      </if>
-      <if test="author != null">
-        author = #{author,jdbcType=VARCHAR},
-      </if>
-      <if test="url != null">
-        url = #{url,jdbcType=VARCHAR},
-      </if>
-      <if test="type != null">
-        type = #{type,jdbcType=VARCHAR},
-      </if>
-<<<<<<< HEAD
-      <if test="info != null">
-        info = #{info,jdbcType=VARCHAR},
-      </if>
-=======
->>>>>>> second commit
-      <if test="latelychapter != null">
-        latelychapter = #{latelychapter,jdbcType=VARCHAR},
-      </if>
-      <if test="latelychapterurl != null">
-        latelychapterurl = #{latelychapterurl,jdbcType=VARCHAR},
-      </if>
-      <if test="latelytime != null">
-        latelytime = #{latelytime,jdbcType=DATE},
-      </if>
-      <if test="status != null">
-        status = #{status,jdbcType=INTEGER},
-      </if>
-      <if test="platformId != null">
-        platform_id = #{platformId,jdbcType=INTEGER},
-      </if>
-<<<<<<< HEAD
-    </set>
-    where id = #{id,jdbcType=INTEGER}
-  </update>
-=======
-      <if test="info != null">
-        info = #{info,jdbcType=LONGVARCHAR},
-      </if>
-    </set>
-    where id = #{id,jdbcType=INTEGER}
-  </update>
-  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.entity.Novel">
-    update t_novel
-    set name = #{name,jdbcType=VARCHAR},
-      author = #{author,jdbcType=VARCHAR},
-      url = #{url,jdbcType=VARCHAR},
-      type = #{type,jdbcType=VARCHAR},
-      latelychapter = #{latelychapter,jdbcType=VARCHAR},
-      latelychapterurl = #{latelychapterurl,jdbcType=VARCHAR},
-      latelytime = #{latelytime,jdbcType=DATE},
-      status = #{status,jdbcType=INTEGER},
-      platform_id = #{platformId,jdbcType=INTEGER},
-      info = #{info,jdbcType=LONGVARCHAR}
-    where id = #{id,jdbcType=INTEGER}
-  </update>
->>>>>>> second commit
-  <update id="updateByPrimaryKey" parameterType="com.entity.Novel">
-    update t_novel
-    set name = #{name,jdbcType=VARCHAR},
-      author = #{author,jdbcType=VARCHAR},
-      url = #{url,jdbcType=VARCHAR},
-      type = #{type,jdbcType=VARCHAR},
-<<<<<<< HEAD
-      info = #{info,jdbcType=VARCHAR},
-=======
->>>>>>> second commit
-      latelychapter = #{latelychapter,jdbcType=VARCHAR},
-      latelychapterurl = #{latelychapterurl,jdbcType=VARCHAR},
-      latelytime = #{latelytime,jdbcType=DATE},
-      status = #{status,jdbcType=INTEGER},
-      platform_id = #{platformId,jdbcType=INTEGER}
-    where id = #{id,jdbcType=INTEGER}
-  </update>
-  <select id="selectByBooknameOrAuthor" parameterType="java.lang.String" resultMap="BaseResultMap">
-  	select 
-  	 <include refid="Base_Column_List" />
-  	 from t_novel
-<<<<<<< HEAD
-  	 where name like #{keyword, jdbcType=VARCHAR} or author like #{keyword, jdbcType=VARCHAR}
-  </select>
-  <insert id="batchInsert" parameterType="java.util.List">
-  	insert into t_novel
-  	 (name, author,url, type, info,latelychapter,
-  	 latelychapterurl, latelytime,status, platform_id)
-=======
-  	 where name like #{keyword, jdbcType=VARCHAR}
-	UNION ALL
-	select 
-  	 <include refid="Base_Column_List" />
-  	 from t_novel
-  	 where author like #{keyword, jdbcType=VARCHAR}
-  </select>
-  <insert id="batchInsert" parameterType="java.util.List">
-  	insert into t_novel
-  	 (name,author,url,type,info,latelychapter,latelychapterurl,latelytime,status,platform_id)
->>>>>>> second commit
-    values
-    <foreach collection="list" item="l" index="index" separator=",">
-	(
-		#{l.name},#{l.author},#{l.url},#{l.type},#{l.info},
-		#{l.latelychapter},#{l.latelychapterurl},#{l.latelytime},
-		#{l.status}, #{l.platformId}
-	)
-    </foreach>
-  </insert>
-  <delete id="deleteAll">
-  	delete from t_novel;
-  	alter table t_novel auto_increment=1;
-  </delete>
->>>>>>> second commit
 </mapper>

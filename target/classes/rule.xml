@@ -51,6 +51,8 @@
 		</selector-fiter>
 		<chapter-detail>#content</chapter-detail>
 		<chapter-detail-title>div[class=content_read] div[class=bookname] h1</chapter-detail-title>
+		<chapter-detail-prev>div[class=bottem2] a,0</chapter-detail-prev>
+		<chapter-detail-next>div[class=bottem2] a,2</chapter-detail-next>
 		<chapter-detail-prev>div[class=bottem2] a,1</chapter-detail-prev>
 		<chapter-detail-next>div[class=bottem2] a,3</chapter-detail-next>
 	</site>

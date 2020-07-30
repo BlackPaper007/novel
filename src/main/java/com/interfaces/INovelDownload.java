@@ -1,31 +1,15 @@
-<<<<<<< HEAD
 package com.interfaces;
 
-import com.entity.ThreadConfig;
+import com.config.ThreadConfig;
 
 public interface INovelDownload {
 
 	/**
 	 * 下载书籍
 	 * @param url
-	 * @param config 可以为null
+	 * @param config 可以为空
 	 * @return
 	 */
-	public String download(String url,ThreadConfig config);
+	public String download(String url,ThreadConfig config) throws NoSuchFieldException, Exception;
 }
-=======
-package com.interfaces;
 
-import com.entity.ThreadConfig;
-
-public interface INovelDownload {
-
-	/**
-	 * 下载书籍
-	 * @param url
-	 * @param config 可以为null
-	 * @return
-	 */
-	public String download(String url,ThreadConfig config);
-}
->>>>>>> second commit
