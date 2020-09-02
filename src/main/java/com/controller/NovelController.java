@@ -3,13 +3,12 @@ package com.controller;
 
 import java.util.List;
 
+import com.annotation.CrawlLog;
 import com.interfaces.INovelDownload;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.entity.ChapterDetail;
@@ -19,7 +18,8 @@ import com.factory.ChapterSpiderFactory;
 import com.interfaces.Processor;
 import com.service.NovelService;
 
-@Controller
+@Api(tags = "小说抓取")
+@RestController
 public class NovelController {
 
 	@Autowired NovelService novelService;
@@ -29,37 +29,32 @@ public class NovelController {
 	@Autowired INovelDownload download;
 
 
-
-
-	@RequestMapping("/")
-	public String index() {
-		return "index";
-	}
-
-	@RequestMapping(value = "/keywordSearch/{keyword}", method = RequestMethod.POST)
-	@ResponseBody
+	@CrawlLog
+	@ApiOperation("根据关键字查询小说列表")
+	@GetMapping("/keywordSearch/{keyword}")
 	public List<Novel> keywordSearch(@PathVariable("keyword") String keyword) {
 		return novelService.getNovelsByKeyword(keyword);
 	}
 
-	@RequestMapping(value = "/chapterListByKeyword/{keyword}")
-	@ResponseBody
+	@CrawlLog
+	@ApiOperation("根据关键字查询小说")
+	@GetMapping("/chapterListByKeyword/{keyword}")
 	public Novel chapterListByKeyword(@PathVariable("keyword") String keyword) {
 		return novelService.getNovelByKeyword(keyword);
 	}
 
-	@RequestMapping(value = "/chapterList")
-	@ResponseBody
+	@ApiOperation("展示小说章节")
+	@GetMapping("/chapterList")
 	public ModelAndView chapterList(String url) {
 		ModelAndView view = new ModelAndView();
 		view.setViewName("chapterList");
-		view.getModel().put("chapters", ChapterSpiderFactory.getChapterSpider(url).getsChapters(url));
+		view.getModel().put("chapters", ChapterSpiderFactory.getChapterSpider(url).getChapters(url));
 		view.getModel().put("baseUrl", url);
 		return view;
 	}
 
-	@RequestMapping(value = "/chapterDetail", method = RequestMethod.GET)
-	@ResponseBody
+	@ApiOperation("展示小说内容")
+	@GetMapping("/chapterDetail")
 	public ModelAndView chapterDetail(String url, String baseUrl) {
 		ModelAndView view = new ModelAndView();
 		view.setViewName("chapterDetail");
@@ -76,8 +71,8 @@ public class NovelController {
 		return view;
 	}
 
-	/*@ResponseBody
-	@RequestMapping(value = "/download", method = RequestMethod.GET)
+	/*
+	@RequestMapping("/download")
 	public void download(String url, HttpServletResponse resp) throws Exception {
 		*//*ThreadConfig t = new ThreadConfig();
 		t.setPath("f:/1");
@@ -109,21 +104,21 @@ public class NovelController {
 		in.close();
 	}*/
 
-	@RequestMapping(value = "/put/{site}", method = RequestMethod.PUT)
-	public String putNovel(@PathVariable("site")String site) {
+	@PutMapping("/put/{site}")
+	public void putNovel(@PathVariable("site")String site,ModelAndView model) {
 		processor.insertNovel(site);
-		return "redirect:/";
+		model.setViewName("index");
 	}
 
-	@RequestMapping(value = "/update/{site}", method = RequestMethod.GET)
-	public String updateNovel(@PathVariable("site")String site) {
+	@GetMapping("/update/{site}")
+	public void updateNovel(@PathVariable("site")String site,ModelAndView model) {
 		processor.updateNovel(site);
-		return "redirect:/";
+		model.setViewName("index");
 	}
 
-	@RequestMapping(value = "/merge/{site}", method = RequestMethod.GET)
-	public String mergeNovel(@PathVariable("site")String site) {
+	@GetMapping("/merge/{site}")
+	public void mergeNovel(@PathVariable("site")String site ,ModelAndView model) {
 		processor.merge(site);
-		return "redirect:/";
+		model.setViewName("index");
 	}
 }

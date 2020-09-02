@@ -1,8 +1,10 @@
 package com.impl.chapter;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.entity.Chapter;
+import com.entity.Result;
 import com.impl.abs.AbstractChapterSpider;
 
 /**
@@ -10,12 +12,13 @@ import com.impl.abs.AbstractChapterSpider;
  */
 public class BQGChapterSpider extends AbstractChapterSpider {
 
+	/**
+	 * 过滤前12条重复数据
+	 * @param url
+	 * @return
+	 */
 	@Override
-	public List<Chapter> getsChapters(String url) {
-		List<Chapter> chapters = super.getsChapters(url);
-		for (int i = 0; i < 12; i++) {
-			chapters.remove(0);
-		}
-		return chapters;
+	public List<Chapter> getChapters(String url) {
+		return super.getChapters(url).stream().skip(12).collect(Collectors.toList());
 	}
 }

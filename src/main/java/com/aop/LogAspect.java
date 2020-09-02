@@ -16,10 +16,29 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 public class LogAspect {
 
-	@Pointcut("execution(public void com.impl.NovelStorage.*(String)) && args(point))")
-	public void LogAspect(String point) { }
+	/*@Pointcut("execution(public void com.impl.NovelStorage.*(String)) && args(point))")
+	public void LogAspect(String point) { }*/
 
-	@Around("LogAspect(point)")
+	@Pointcut("@annotation(com.annotation.CrawlLog)")
+	public void pointcut() {}
+
+	@Around("pointcut()")
+	public Object around(ProceedingJoinPoint joinPoint){
+		String className = joinPoint.getTarget().getClass().getName();
+		String methodName = joinPoint.getSignature().getName();
+		Object[] methodArgs = joinPoint.getArgs();
+
+		log.info("[{}] -- Request -- {}",methodName,methodArgs);
+		Object result = null;
+		try {
+			result = joinPoint.proceed();
+		} catch (Throwable throwable) {
+			throwable.printStackTrace();
+		}
+		return result;
+	}
+
+	/*@Around("LogAspect(point)")
 	public void doAroundLog(ProceedingJoinPoint pjp, String point) {
 		try {
 			log.info(point + " 正在更新");
@@ -28,5 +47,5 @@ public class LogAspect {
 		} catch (Throwable e) {
 			log.error("更新异常",e);
 		}
-	}
+	}*/
 }

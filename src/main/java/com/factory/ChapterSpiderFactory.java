@@ -1,14 +1,11 @@
 
 package com.factory;
 
-import java.util.List;
-
-import com.entity.Chapter;
 import com.impl.chapter.BQGChapterSpider;
 import com.impl.chapter.ChapterSpider;
 import com.impl.chapter.DDChapterSpider;
 import com.interfaces.IChapterSpider;
-import com.novelEnum.Site;
+import com.Enum.Site;
 
 /**
  * 小说章节工厂类

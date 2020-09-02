@@ -2,11 +2,14 @@ package com.dao;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import com.entity.Novel;
+import org.springframework.stereotype.Repository;
 
-
+@Mapper
+@Repository
 public interface NovelMapper {
     int deleteByPrimaryKey(Integer id);
 

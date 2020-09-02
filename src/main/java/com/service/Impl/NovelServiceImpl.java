@@ -4,6 +4,7 @@ import java.util.List;
 
 import java.net.URLEncoder;
 
+import com.impl.novels.job.BaseJob;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -18,8 +19,7 @@ import com.service.NovelService;
 import lombok.extern.slf4j.Slf4j;
 
 import com.impl.abs.AbstractSpider;
-import com.impl.novels.job.DDNovelJob;
-import com.novelEnum.Site;
+import com.Enum.Site;
 
 @Service
 @Slf4j
@@ -45,7 +45,7 @@ public class NovelServiceImpl extends AbstractSpider implements NovelService {
 		try {
 			keyword = URLEncoder.encode(keyword, "gbk");
 			String url = requestUrl + keyword;
-			String result = crawl(url);
+			String result = crawl(url).getDate().toString();
 			Document doc = Jsoup.parse(result);
 
 			Element e = doc.select("#search-main .search-list li").get(1);
@@ -56,7 +56,7 @@ public class NovelServiceImpl extends AbstractSpider implements NovelService {
 			novel.setAuthor(e.select(".s4").text());
 			novel.setPlatformId(Site.getEnumByUrl(url).getId());
 
-			novel = new DDNovelJob(novel.getUrl(), novel.getName()).call();
+			novel = new BaseJob(novel.getUrl(), novel.getName()).call().getNovel();
 
 			/*Elements element = doc.select("#search-main .search-list li");
 			//移除标题

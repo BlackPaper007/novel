@@ -1,9 +1,8 @@
 package com.factory;
 
-import com.impl.chapter.BQGChapterDetailSpider;
-import com.impl.chapter.ChapterDetailSpider;
+import com.impl.detail.ChapterDetailSpider;
 import com.interfaces.IChapterDetail;
-import com.novelEnum.Site;
+import com.Enum.Site;
 
 /**
  * 章节内容工厂类
@@ -21,15 +20,14 @@ public final class ChapterDetailSpiderFactory {
 		Site site = Site.getEnumByUrl(url);
 		IChapterDetail chapterDetail = null;
 		switch (site) {
+			case biquge:
 			case uutxt:
 			case xbiquge:
 			case booktxt:
 			case biquku:
 				chapterDetail = new ChapterDetailSpider(); break;
-			case biquge:
-				chapterDetail = new BQGChapterDetailSpider(); break;
 			}
-			return chapterDetail;
+		return chapterDetail;
 	}
-	
+
 }

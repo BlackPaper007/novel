@@ -1,5 +1,7 @@
-package com.novelEnum;
+package com.Enum;
 
+
+import java.util.Arrays;
 
 /**
  * 支持的小说网站枚举
@@ -12,11 +14,11 @@ public enum Site {
 	xbiquge(3, "xbiquge.la"),
 	biquge(4,"biquge.lu"),
 	biquku(5,"biquku.la");
-	
-	private int id;
+
+	private Integer id;
 	private String url;
-	
-	private Site(int id, String url) {
+
+	private Site(Integer id, String url) {
 		this.id = id;
 		this.url = url;
 	}
@@ -32,20 +34,13 @@ public enum Site {
 	public void setUrl(String url) {
 		this.url = url;
 	}
-	
+
 	public static Site getEnumById(int id) {
-		for (Site novelSiteEnum : values()) {
-			if(novelSiteEnum.getId()==id) return novelSiteEnum;
-		}
-		throw new RuntimeException("id=" + id + "是不被支持的小说网站");
+		return Arrays.stream(values()).filter((v) -> id == v.id).findFirst().orElseThrow(IllegalArgumentException::new);
 	}
-	
+
 	public static Site getEnumByUrl(String url) {
 		if (url == null) throw new IllegalArgumentException("url 不能为null");
-		for (Site novelSiteEnum : values()) {
-			//比较是否包含字符
-			if (url.contains(novelSiteEnum.url)) return novelSiteEnum;
-		}
-		throw new RuntimeException("url=" + url + "是不被支持的小说网站");
+		return Arrays.stream(values()).filter((v) -> url.contains(v.url)).findFirst().orElseThrow(IllegalArgumentException::new);
 	}
 }

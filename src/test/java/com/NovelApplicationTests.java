@@ -5,6 +5,8 @@ import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.dao.redis.NovelRedisTemplate;
+import com.factory.ChapterSpiderFactory;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,7 +19,6 @@ import com.entity.ChapterDetail;
 import com.entity.Novel;
 import com.factory.ChapterDetailSpiderFactory;
 import com.factory.NovelSpiderFactory;
-import com.impl.NovelDownload;
 import com.impl.chapter.ChapterSpider;
 import com.interfaces.IChapterDetail;
 import com.interfaces.IChapterSpider;
@@ -33,16 +34,20 @@ class NovelApplicationTests {
 	@Autowired NovelService novelService;
 	@Autowired Processor processor;
     @Autowired INovelDownload download;
+    @Autowired
+	NovelRedisTemplate novelRedisTemplate;
+
 
 	String url="http://www.u33.cc/u140686/";
 	String url2="https://www.uutxt.com/book/43/43821/2520338.html";
 	String url3="https://www.booktxt.net/23_23112/";
 	String url4="http://www.biquku.la/47/47742/";
+	String url5="https://www.biquge.lu/book/48909/";
 
 	@Test
 	void chapterLoads() {
-		IChapterSpider spider = new ChapterSpider();
-		List<Chapter> chapters = spider.getsChapters(url4);
+		IChapterSpider spider = ChapterSpiderFactory.getChapterSpider(url5);
+		List<Chapter> chapters = spider.getChapters(url5);
 		for (Chapter chapter : chapters) {
 			System.out.println(chapter);
 		}
@@ -92,6 +97,13 @@ class NovelApplicationTests {
 	@Test
 	public void test() {
 		processor.merge("顶点小说");
+	}
+
+	@Test
+	public void redistest() {
+		List<Novel> novels = novelMapper.selectBySite(1);
+		novelRedisTemplate.list(novels);
+		//System.out.println(novelRedisTemplate.lGet("booktxt_cb0fa46d-8fee-4162-a03d-f3eb8e95b692",0,novelRedisTemplate.lGetListSize("booktxt_cb0fa46d-8fee-4162-a03d-f3eb8e95b692")));
 	}
 
 }

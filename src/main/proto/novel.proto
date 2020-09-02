@@ -1,0 +1,19 @@
+syntax = "proto3";
+option java_package = "com.entity";
+option java_outer_classname = "NovelProto";
+
+message novel{
+
+  sint32 id=1;
+  string name=2;
+  string author=3;
+  string url=4;
+  string type=5;
+  string info=6;
+  string latelychapter=7;
+  string latelychapterurl=8;
+  sint64 latelytime=9;
+  sint32 status=10;
+  sint32 platformId=11;
+  sint64 getUpdateTime=12;
+}

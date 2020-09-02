@@ -17,7 +17,7 @@ import com.dao.NovelMapper;
 import com.entity.Novel;
 import com.factory.NovelSpiderFactory;
 import com.interfaces.Processor;
-import com.novelEnum.Site;
+import com.Enum.Site;
 
 @Component
 public class NovelStorage implements Processor {
@@ -49,7 +49,7 @@ public class NovelStorage implements Processor {
 		int updateBatch = ns.novelMapper.updateBatch(novels);
 		log.info("更新数据 " + updateBatch + " 条");
 
-		novels = getDiffElement(data, novels, new ArrayList<>());
+		novels = getDiffElement(data, novels);
 
 		int batchInsert = novels.size() == 0 ? 0 : ns.novelMapper.batchInsert(novels);
 		log.info("插入数据 " + batchInsert + " 条");
@@ -71,10 +71,10 @@ public class NovelStorage implements Processor {
 	 * 取出集合中不同的元素
 	 * @param data 被对比的集合
 	 * @param source 外部数据
-	 * @param newList 接收对象
 	 * @return
 	 */
-	private List<Novel> getDiffElement(List<Novel> data,List<Novel> source,List<Novel> newList){
+	private List<Novel> getDiffElement(List<Novel> data, List<Novel> source){
+		List<Novel> newList = new ArrayList<>();
 		//取集合中最后一个元素
 		Novel last = data.get(data.size() - 1);
 		source.forEach(k -> {
@@ -87,7 +87,7 @@ public class NovelStorage implements Processor {
 		});
 		return newList;
 	}
-	
+
 	private List<Novel> getFactory(String url) {
 		return NovelSpiderFactory.getNovelSpider(url).getNovel(url);
 	}

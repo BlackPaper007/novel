@@ -11,6 +11,6 @@ public interface IChapterSpider {
 	 * @param url
 	 * @return
 	 */
-	public List<Chapter> getsChapters(String url);
+	public List<Chapter> getChapters(String url);
 	
 }

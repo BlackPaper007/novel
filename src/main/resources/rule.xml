@@ -5,10 +5,10 @@
 		<title>笔趣库</title>
 		<charset>UTF-8</charset>
 		<url>http://www.biquku.la/</url>
-		<novel-title>#info h1</novel-title>
-		<novel-info>#maininfo</novel-info>
-		<novel-type>div[class=con_top] a,2</novel-type>
-		<novel-list>#main ul li a</novel-list>
+		<title>#info h1</title>
+		<info>#maininfo</info>
+		<type>div[class=con_top] a,2</type>
+		<chapter>#main ul li a</chapter>
 		<selector>#list dl dd a</selector>
 		<selector-fiter>
 			<!-- fiter-list 不能为空 -->
@@ -23,10 +23,10 @@
 		<title>新笔趣阁</title>
 		<charset>UTF-8</charset>
 		<url>http://www.xbiquge.la/</url>
-		<novel-title>#info h1</novel-title>
-		<novel-info>#maininfo</novel-info>
-		<novel-type>div[class=con_top] a,2</novel-type>
-		<novel-list>#main ul li a</novel-list>
+		<title>#info h1</title>
+		<info>#maininfo</info>
+		<type>div[class=con_top] a,2</type>
+		<chapter>#main ul li a</chapter>
 		<selector>#list dl dd a</selector>
 		<selector-fiter>
 			<!-- fiter-list 不能为空 -->
@@ -41,10 +41,10 @@
 		<title>顶点小说</title>
 		<charset>gbk</charset>
 		<url>https://www.booktxt.net/</url>
-		<novel-title>#info h1</novel-title>
-		<novel-info>#maininfo</novel-info>
-		<novel-type>div[class=con_top]</novel-type>
-		<novel-list>#main ul li a</novel-list>
+		<title>#info h1</title>
+		<info>#maininfo</info>
+		<type>div[class=con_top]</type>
+		<chapter>#main ul li a</chapter>
 		<selector>#list dl dd a</selector>
 		<selector-fiter>
 			<fiter-list>null</fiter-list>
@@ -53,15 +53,13 @@
 		<chapter-detail-title>div[class=content_read] div[class=bookname] h1</chapter-detail-title>
 		<chapter-detail-prev>div[class=bottem2] a,0</chapter-detail-prev>
 		<chapter-detail-next>div[class=bottem2] a,2</chapter-detail-next>
-		<chapter-detail-prev>div[class=bottem2] a,1</chapter-detail-prev>
-		<chapter-detail-next>div[class=bottem2] a,3</chapter-detail-next>
 	</site>
 	<site>
 		<title>uu书盟</title>
 		<charset>UTF-8</charset>
 		<url>http://www.u33.cc/</url>
-		<novel-info>#maininfo</novel-info>
-		<novel-title>#info h1</novel-title>
+		<info>#maininfo</info>
+		<title>#info h1</title>
 		<selector>#list dd a</selector>
 		<selector-fiter>
 			<fiter-list>null</fiter-list>
@@ -76,9 +74,9 @@
 		<title>笔趣阁</title>
 		<charset>gbk</charset>
 		<url>https://www.biquge.lu/</url>
-		<novel-title>div[class=info] h2</novel-title>
-		<novel-info>div[class=info]</novel-info>
-		<novel-list>#main div[class=novellist] ul li a</novel-list>
+		<title>div[class=info] h2</title>
+		<info>div[class=info]</info>
+		<chapter>#main div[class=novellist] ul li a</chapter>
 		<selector>div[class=listmain] dd a</selector>
 		<selector-fiter>
 			<!-- fiter-list 不能为空 -->

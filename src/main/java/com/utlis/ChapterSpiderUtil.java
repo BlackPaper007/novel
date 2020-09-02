@@ -3,7 +3,6 @@ package com.utlis;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -13,29 +12,12 @@ import java.io.StringWriter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.Date;
-import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
-
-import org.jsoup.nodes.Document;
-
-import com.novelEnum.Site;
 
 public final class ChapterSpiderUtil {
 
-	/**
-	 * 过滤不需要的标签
-	 * @param url
-	 * @param doc
-	 * @throws Exception
-	 */
-	public static void selectorFiter(String url,Document doc) throws Exception {
-		List<String> fiter = Config.getFiter(Site.getEnumByUrl(url));
-		for(int i=0;i<fiter.size();i++)
-		if(fiter.get(i)!=null) doc.select(fiter.get(i)).remove();
-	}
-	
+
 	/**
 	 * 处理具体元素的下标索引
 	 */
@@ -44,7 +26,7 @@ public final class ChapterSpiderUtil {
 		str = str.length() == substring.length() ? "0" : substring;
 		return Integer.parseInt(str);
 	}
-	
+
 
 	/**
 	 * Example:顶点小说 > 玄幻小说 > 天地魂变最新章节
@@ -52,13 +34,12 @@ public final class ChapterSpiderUtil {
 	 * @return
 	 */
 	public static String getStr(String str) {
-
 		return str.substring(str.indexOf(">")+1,str.lastIndexOf(">")).trim();
 	}
-	
+
 	/**
 	 * 多个文件合并为一个文件，合并规则：按文件名分割排序
-	 * 
+	 *
 	 * @param path        基础目录，该根目录下的所有文本文件都会被合并到 mergeToFile
 	 * @param mergeToFile 被合并的文本文件，这个参数可以为null,合并后的文件保存在制定文件夹
 	 * @param title       小说标题
@@ -66,21 +47,13 @@ public final class ChapterSpiderUtil {
 	 */
 	public static void multiFileMerge(String path, String title, String mergeToFile, boolean delFile) {
 		mergeToFile = mergeToFile == null ? path + "/merge/" + title + ".txt" : mergeToFile;
-		File[] files = new File(path).listFiles(new FilenameFilter() {
-			@Override
-			public boolean accept(File dir, String name) {
-				return name.endsWith(".txt");
-			}
-		});
-		Arrays.sort(files, new Comparator<File>() {
-			@Override
-			public int compare(File o1, File o2) {
-				int o1Index=Integer.parseInt(o1.getName().split("\\-")[0]);
-				int o2Index=Integer.parseInt(o2.getName().split("\\-")[0]);
-				if (o1Index>o2Index) return 1;
-				else if(o1Index==o2Index) return 0;
-				else return -1;
-			}
+		File[] files = new File(path).listFiles((dir, name) -> name.endsWith(".txt"));
+		Arrays.sort(files, (o1, o2) -> {
+			int o1Index=Integer.parseInt(o1.getName().split("\\-")[0]);
+			int o2Index=Integer.parseInt(o2.getName().split("\\-")[0]);
+			if (o1Index>o2Index) return 1;
+			else if(o1Index==o2Index) return 0;
+			else return -1;
 		});
 		PrintWriter out = null;
 		try {
@@ -103,14 +76,14 @@ public final class ChapterSpiderUtil {
 			out.close();
 		}
 	}
-	
+
 	/**
 	 * 获取书籍的状态
 	 * @param status
 	 * @return
 	 */
 	public static int getNovelStatus(String status) {
-		if (status.contains("连载")) {
+		if (status.contains("连载") || status.contains("连载中")) {
 			return 1;
 		} else if (status.contains("完结") || status.contains("完成")) {
 			return 2;
@@ -120,19 +93,24 @@ public final class ChapterSpiderUtil {
 	}
 
 	/**
-	 * 字符转换时间
+	 * 字符转换时间戳
 	 * @param strDate
 	 * @param pattern
 	 * @return
 	 * @throws ParseException
 	 */
 
-	public static Date getData(String strDate,String pattern) throws ParseException {
+	public static Long getData(String strDate,String pattern) throws ParseException {
 		SimpleDateFormat sdf = new SimpleDateFormat(pattern);
 		Date date = sdf.parse(strDate);
-		return date;
+		return date.getTime();
 	}
-	
+
+	public static String getStamp(Long timeStamp,String pattern){
+		SimpleDateFormat sdf = new SimpleDateFormat(pattern);
+		String sd2 = sdf.format(new Date(Long.parseLong(String.valueOf(timeStamp))));
+		return sd2;
+	}
 
 	/**
 	 * 获得异常详细并打印出来
@@ -150,7 +128,7 @@ public final class ChapterSpiderUtil {
         sw.flush();
         return  sw.toString();
 	}
-	
+
 	/**
 	 * 获取伪造的ip
 	 */
@@ -165,7 +143,7 @@ public final class ChapterSpiderUtil {
 		sb.append(getNum(2,254));
 		return sb.toString();
 	}
-	
+
 	/**
 	 * 获取随机范围内的数字
 	 */
@@ -173,10 +151,5 @@ public final class ChapterSpiderUtil {
 		ThreadLocalRandom random = ThreadLocalRandom.current();
 		return random.nextInt( (end - start + 1) + start);
 	}
-	
-	public static void main(String[] args) {
-		System.out.println(getIPProxy());
-	}
-	
 }
 

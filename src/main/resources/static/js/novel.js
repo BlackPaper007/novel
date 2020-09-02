@@ -30,7 +30,7 @@ function searchByUrl(url) {
 function searchBywd(wd) {
 	$.ajax({
 		url : "./keywordSearch/" + wd,
-		type : "post",
+		type : "get",
 		dataType : "json",
 		error : function() {
 			alert("小说抓取失败");
@@ -48,8 +48,8 @@ function searchBywd(wd) {
 						+ novel.name + "</a></td><td>"
 						+ novel.author + "</td><td>"
 						+ isLatelychapterNull(novel.latelychapter)+ "</td><td>"
-						+ getPlatformId(novel.platformId) + "</td><td><a href='./download?url="
-						+ novel.url + "'>下载</a></td></tr>");
+						+ getPlatformId(novel.platformId) + "</td><td><a>下载</a></td></tr>");
+					//./download?url="+ novel.url + "
 					$("#list").append($tr);
 				});
 			}
@@ -60,7 +60,7 @@ function searchBywd(wd) {
 function DDsearchBywd(wd){
 	$.ajax({
 		url : "./chapterListByKeyword/" + wd,
-		type : "post",
+		type : "get",
 		error : function() {
 			alert("小说抓取失败");
 			$("#loadModal").css("display","none");
@@ -70,9 +70,7 @@ function DDsearchBywd(wd){
 			var gettype=Object.prototype.toString;
 			if(result.length==0){
 				alert("暂时没有该小说！");
-			}/*else if(gettype.call(result)=="[object String]"){
-				window.open("./chapterList?url=" + result);
-			}*/else{
+			} else{
 				$("#list").html("");
 				$(result).each(function(index, novel) {
 					var $tr = $("<tr><td>"+ (index + 1)

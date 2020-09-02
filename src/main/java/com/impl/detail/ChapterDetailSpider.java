@@ -1,4 +1,4 @@
-package com.impl.chapter;
+package com.impl.detail;
 
 import com.impl.abs.AbstractChapterDetailSpider;
 

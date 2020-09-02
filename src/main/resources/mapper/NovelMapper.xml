@@ -10,13 +10,14 @@
     <result column="info" jdbcType="VARCHAR" property="info" />
     <result column="latelychapter" jdbcType="VARCHAR" property="latelychapter" />
     <result column="latelychapterurl" jdbcType="VARCHAR" property="latelychapterurl" />
-    <result column="latelytime" jdbcType="DATE" property="latelytime" />
+    <result column="latelytime" jdbcType="BIGINT" property="latelytime" />
     <result column="status" jdbcType="INTEGER" property="status" />
     <result column="platform_id" jdbcType="INTEGER" property="platformId" />
+    <result column="update_time" jdbcType="BIGINT" property="updateTime" />
   </resultMap>
   <sql id="Base_Column_List">
     id, name, author, url, type, info, latelychapter, latelychapterurl, latelytime, status,
-    platform_id
+    platform_id, update_time
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select
@@ -32,11 +33,11 @@
     insert into t_novel (id, name, author,
       url, type, info, latelychapter,
       latelychapterurl, latelytime, status,
-      platform_id)
+      platform_id, update_time)
     values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{author,jdbcType=VARCHAR},
       #{url,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR}, #{info,jdbcType=VARCHAR}, #{latelychapter,jdbcType=VARCHAR},
-      #{latelychapterurl,jdbcType=VARCHAR}, #{latelytime,jdbcType=DATE}, #{status,jdbcType=INTEGER},
-      #{platformId,jdbcType=INTEGER})
+      #{latelychapterurl,jdbcType=VARCHAR}, #{latelytime,jdbcType=BIGINT}, #{status,jdbcType=INTEGER},
+      #{platformId,jdbcType=INTEGER}, #{updateTime,jdbcType=BIGINT})
   </insert>
   <insert id="insertSelective" parameterType="com.entity.Novel">
     insert into t_novel
@@ -74,6 +75,9 @@
       <if test="platformId != null">
         platform_id,
       </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -101,13 +105,16 @@
         #{latelychapterurl,jdbcType=VARCHAR},
       </if>
       <if test="latelytime != null">
-        #{latelytime,jdbcType=DATE},
+        #{latelytime,jdbcType=BIGINT},
       </if>
       <if test="status != null">
         #{status,jdbcType=INTEGER},
       </if>
       <if test="platformId != null">
         #{platformId,jdbcType=INTEGER},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=BIGINT},
       </if>
     </trim>
   </insert>
@@ -136,13 +143,16 @@
         latelychapterurl = #{latelychapterurl,jdbcType=VARCHAR},
       </if>
       <if test="latelytime != null">
-        latelytime = #{latelytime,jdbcType=DATE},
+        latelytime = #{latelytime,jdbcType=BIGINT},
       </if>
       <if test="status != null">
         status = #{status,jdbcType=INTEGER},
       </if>
       <if test="platformId != null">
         platform_id = #{platformId,jdbcType=INTEGER},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=BIGINT},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
@@ -156,9 +166,10 @@
       info = #{info,jdbcType=VARCHAR},
       latelychapter = #{latelychapter,jdbcType=VARCHAR},
       latelychapterurl = #{latelychapterurl,jdbcType=VARCHAR},
-      latelytime = #{latelytime,jdbcType=DATE},
+      latelytime = #{latelytime,jdbcType=BIGINT},
       status = #{status,jdbcType=INTEGER},
-      platform_id = #{platformId,jdbcType=INTEGER}
+      platform_id = #{platformId,jdbcType=INTEGER},
+      update_time = #{updateTime,jdbcType=BIGINT}
     where id = #{id,jdbcType=INTEGER}
   </update>
   <select id="selectByBooknameOrAuthor" parameterType="java.lang.String" resultMap="BaseResultMap">
@@ -179,7 +190,7 @@
   <insert id="batchInsert" parameterType="java.util.List">
   	insert ignore into t_novel
   	 (name, author,url, type, info,latelychapter,
-  	 latelychapterurl, latelytime,status, platform_id)
+  	 latelychapterurl, latelytime,status, platform_id,update_time)
     values
     <foreach collection="list" item="l" index="index" separator=",">
 	(
@@ -192,7 +203,8 @@
 		#{l.latelychapterurl},
 		#{l.latelytime},
 		#{l.status},
-		#{l.platformId}
+		#{l.platformId},
+        #{l.updateTime}
 	)
     </foreach>
   </insert>
@@ -222,33 +234,12 @@
 	       		  </if>
               </foreach>
           </trim>
-          <trim prefix="name = case " suffix="end,">
-              <foreach collection="novels" item="i" index="index">
-                  <if test="i.name != null">
-			        when url=#{i.url} then #{i.name}
-			      </if>
-              </foreach>
-          </trim>
-          <trim prefix="author = case " suffix="end,">
-              <foreach collection="novels" item="i" index="index">
-                  <if test="i.author != null">
-			        when url=#{i.url} then #{i.author}
-			      </if>
-              </foreach>
-          </trim>
-          <trim prefix="type = case " suffix="end,">
-              <foreach collection="novels" item="i" index="index">
-                  <if test="i.type != null">
-			        when url=#{i.url} then #{i.type}
-			      </if>
-              </foreach>
-          </trim>
-          <trim prefix="info = case " suffix="end,">
-              <foreach collection="novels" item="i" index="index">
-                  <if test="i.info != null">
-			        when url=#{i.url} then #{i.info}
-			      </if>
-              </foreach>
+          <trim prefix="update_time = case " suffix="end,">
+            <foreach collection="novels" item="i" index="index">
+              <if test="i.updateTime != null">
+                when url=#{i.url} then #{i.updateTime}
+              </if>
+            </foreach>
           </trim>
       </trim>
       		where url in (

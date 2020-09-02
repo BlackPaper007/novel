@@ -2,26 +2,63 @@ server:
   port: 80
   servlet:
     context-path: /novel
+    encoding:
+      enabled: true
+      charset: utf-8
+      force: true
+  error:
+    path: /error
+
 
 spring:
   datasource:
-    name: novel
     type: com.alibaba.druid.pool.DruidDataSource
     druid:
       url: jdbc:mysql://localhost:3306/novel?useUnicode=true&serverTimezone=UTC&useAffectedRows=true&characterEncoding=UTF-8&useSSL=true&allowMultiQueries=true
       username: root
       password: root
       driver-class-name: com.mysql.cj.jdbc.Driver
-      initial-size: 1
-      min-idle: 1
-      max-active: 20
-      max-wait: 60000
+      # 初始化时建立物理连接的个数。初始化发生在显示调用init方法，或者第一次getConnection时
+      initial-size: 10
+      # 最大连接池连接数量，最大活跃连接数
+      max-active: 150
+      # 最小连接池连接数量，最小空闲数量
+      min-idle: 10
+      # 配置获取连接等待超时的时间
+      max-wait: 5000
+      # 配置间隔多久才进行一次检测，Destroy线程检测需要关闭的空闲连接的时间，单位是毫秒
+      time-between-eviction-runs-millis:  60000
+      # 连接在池中最小生存的时间，单位是毫秒
+      min-evictable-idle-time-millis: 30000
+      # 是否缓存preparedStatement，PSCache对支持游标的数据库性能提升巨大，比如说oracle。在mysql下建议关闭。
+      pool-prepared-statements: false
+      # 指定每个连接上PSCache的大小
+      # max-open-prepared-statements: 20
+      # 指定检测连接sql，如果是null，会影响testWhileIdle、testOnBorrow、testOnReturn失效，如果底层代码use-ping-method是true，默认使用ping
+      validation-query: SELECT 1 FROM DUAL
+      validation-query-timeout: 500
+      # 申请连接时会使用validationQuery检测连接是否有效，true会降低性能，如果是true，并且检测到连接已关闭，会获取其它的可用的连接
+      test-on-borrow: false
+      # 归还连接时会使用validationQuery检测连接是否有效，true会降低性能，如果是true，并且检测到连接已关闭，会获取其它的可用的连接，放回数据库线程池
+      test-on-return: false
+      # 建议配置为true，不影响性能，并且保证安全性。申请连接的时候检测，如果此连接空闲时间大于timeBetweenEvictionRunsMillis，执行validationQuery检测连接是否有效。
+      test-while-idle: true
+      # 1)配合testWhileIdle=true时使用，如果当前jdbc使用间隔大于timeBetweenEvictionRunsMillis配置的空闲连接过期时间，执行validationQuery检测连接是否有效。
+      # 数据库会主动超时并断开连接，因此建议timeBetweenEvictionRunsMillis小于数据库的连接主动断开时间（如mysql的wait_timeout和interactive_timeout）
+      # 配置监控统计拦截的filters,去掉后，监控界面的sql无法统计
+      # 属性类型是字符串，通过别名的方式配置扩展插件，常用的插件有：监控统计用的filter:stat,日志用的filter:log4j,防御sql注入的filter:wall
+      filters: stat,wall,log4j
+      connection-properties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+      stat-view-servlet:
+        enabled: true
+        # 是否可以重置数据源
+        reset-enable: false
+        #login-username: 123
+        #login-password: 123
 
-  http:
-    encoding:
-      charset: utf-8
-      force: true
-      enabled: true
+
+
+
 
   thymeleaf:
     prefix: classpath:/templates/
@@ -32,6 +69,7 @@ spring:
       content-type: text/html; charset=utf-8
     cache: false
 
+
   resources:
     chain:
       strategy:
@@ -39,6 +77,20 @@ spring:
           enabled: true
           paths:
           - /**
+
+
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    password:
+    jedis:
+      pool:
+        max-active: 5
+        max-wait: 10s
+        max-idle: 6
+        min-idle: 0
+    timeout: 10s
+
 
 mybatis:
   type-aliases-package: com.entity

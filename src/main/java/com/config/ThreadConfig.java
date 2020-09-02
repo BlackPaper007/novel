@@ -14,12 +14,12 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class ThreadConfig <T, ID extends Serializable>{
+public class ThreadConfig <T extends Serializable>{
 
 	private static final Integer DEFAULT_TRISE = 5;
 	private static final Integer DEFAULT_SIZE = 100;
-	/** 1-3秒 */
-	private static final Long DEFAULT_SLEEPTIME = (long) ((1 + Math.random() * 2) * 1000);
+	/** 2-4秒 */
+	private static final Long DEFAULT_SLEEPTIME = (long) ((2 + Math.random() * 2) * 1000);
 	private static final Integer DEFAULT_MAXTHREAD = 20;
 
 
